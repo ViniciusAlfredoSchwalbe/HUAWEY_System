@@ -91,7 +91,7 @@ def janela():
 
                     #localiza o elemento na pagina e clica login
                     page.locator('xpath=/html/body/div[1]/div[2]/div[2]/div[3]/div/span').click()
-                    time.sleep(2)
+                    time.sleep(10)
 
                     #faz com que todos os inversores fiquem disponíveis
                     page.locator('xpath=/html/body/div/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div/div/div[2]/div[4]/ul/li[11]/div[1]/div/span[2]').click()
@@ -103,7 +103,7 @@ def janela():
                     
                     scraapy(page.content() , Data , TimeStamp)
                     page.close()
-                    time.sleep(10)
+                    time.sleep(3000)
 
 
     #janela do tk inter
