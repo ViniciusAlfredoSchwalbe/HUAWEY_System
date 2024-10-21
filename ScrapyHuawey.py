@@ -58,69 +58,43 @@ def database(x, y , D , T):
             print(f"Foram incluidos {cursor.rowcount} registros!")
 
 
-def janela():
+while True:
+    #variável que coleta a hora
+    hora = dt.now()
+    #mostra a data a hora e os minutos, 21/02/2024 , 09:33
+    TimeStamp = hora.strftime("%H:%M")
+    Data = hora.strftime("%d/%m/%Y")
 
-    def clique():
-        mail = email.get()
-        password = senha.get()
+    if(hora.hour >= 8 and hora.hour <= 18):
+    
+        with sync_playwright() as p:
+            # teraenergia / energiafv01  
+            #bot abre o site e navegar ate ter as informaçoes do inversor
+            navegator = p.chromium.launch(headless=False) #headless mostra ou n o navegador
+            page = navegator.new_page()
+            page.goto("https://la5.fusionsolar.huawei.com/uniportal/pvmswebsite/assets/build/cloud.html")
 
-        janela.destroy()
+            time.sleep(0.1)
 
-        while True:
-            #variável que coleta a hora
-            hora = dt.now()
-            #mostra a data a hora e os minutos, 21/02/2024 , 09:33
-            TimeStamp = hora.strftime("%H:%M")
-            Data = hora.strftime("%d/%m/%Y")
+            #localiza o campo de preenchimento e preenche
+            page.fill("xpath=/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/input" , mail)
+            page.fill("xpath=/html/body/div[1]/div[2]/div[2]/div[2]/div[2]/input" , password)
+            time.sleep(0.1)
 
-            if(hora.hour >= 8 and hora.hour <= 18):
+            #localiza o elemento na pagina e clica login
+            page.locator('xpath=/html/body/div[1]/div[2]/div[2]/div[3]/div/span').click()
+            time.sleep(10)
+
+            #faz com que todos os inversores fiquem disponíveis
+            page.locator('xpath=/html/body/div/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div/div/div[2]/div[4]/ul/li[11]/div[1]/div/span[2]').click()
+            time.sleep(0.1)
+            #abre o pop-up e seleciona o elemento 100, para mostrar todos os inversores
+            page.locator('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[2]/div/div/div[2]/div[4]/ul/li[11]/div[1]/div[2]/div/div/div/div[2]/div/div/div/div[5]/div').click()
+            time.sleep(2)
+
             
-                with sync_playwright() as p:
-                    # teraenergia / energiafv01  
-                    #bot abre o site e navegar ate ter as informaçoes do inversor
-                    navegator = p.chromium.launch(headless=False) #headless mostra ou n o navegador
-                    page = navegator.new_page()
-                    page.goto("https://la5.fusionsolar.huawei.com/uniportal/pvmswebsite/assets/build/cloud.html")
-
-                    time.sleep(0.1)
-
-                    #localiza o campo de preenchimento e preenche
-                    page.fill("xpath=/html/body/div[1]/div[2]/div[2]/div[2]/div[1]/input" , mail)
-                    page.fill("xpath=/html/body/div[1]/div[2]/div[2]/div[2]/div[2]/input" , password)
-                    time.sleep(0.1)
-
-                    #localiza o elemento na pagina e clica login
-                    page.locator('xpath=/html/body/div[1]/div[2]/div[2]/div[3]/div/span').click()
-                    time.sleep(10)
-
-                    #faz com que todos os inversores fiquem disponíveis
-                    page.locator('xpath=/html/body/div/div/div/div[2]/div/div/div/div/div/div/div/div[2]/div/div/div[2]/div[4]/ul/li[11]/div[1]/div/span[2]').click()
-                    time.sleep(0.1)
-                    #abre o pop-up e seleciona o elemento 100, para mostrar todos os inversores
-                    page.locator('xpath=/html/body/div[1]/div/div/div[2]/div/div[1]/div/div/div/div/div/div[2]/div/div/div[2]/div[4]/ul/li[11]/div[1]/div[2]/div/div/div/div[2]/div/div/div/div[5]/div').click()
-                    time.sleep(2)
-
-                    
-                    scraapy(page.content() , Data , TimeStamp)
-                    page.close()
-                    time.sleep(3000)
+            scraapy(page.content() , Data , TimeStamp)
+            page.close()
+            time.sleep(3000)
 
 
-    #janela do tk inter
-    janela = tk.CTk()
-    janela.geometry("500x300")
-
-    titulo = tk.CTkLabel(janela , text="LOGIN")
-    titulo.pack(padx=10 , pady=10)
-
-    email = tk.CTkEntry(janela , placeholder_text="Email")
-    email.pack(padx=10 , pady=10)
-    senha = tk.CTkEntry(janela , placeholder_text="Senha" , show="#")
-    senha.pack(padx=10 , pady=10)
-    botao = tk.CTkButton(janela , text="Login" , command=clique)
-    botao.pack(padx=10 , pady=30)
-    janela.mainloop() 
-
-
-
-janela()
